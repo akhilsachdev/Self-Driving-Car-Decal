@@ -114,16 +114,24 @@ class Car_Interface():
             '''
 
             #CODE HERE (Delete exception too)
-            if pedal is None:
-                accel_amt = 0
-                brake_amt = 0
-            if pedal is self.ACCELERATOR:
-                accel_amt = amount
-                brake_amt = 0
-            if pedal is self.BRAKE:
-                accel_amt = 0
-                brake_amt = amount
-            self.accel = self.accelerator_weight * accel_amt + self.brake_weight * brake_amt - self.friction_constant * abs(self.velocity) + self.rolling_bias
+#             if pedal is None:
+#                 accel_amt = 0
+#                 brake_amt = 0
+#             if pedal is self.ACCELERATOR:
+#                 accel_amt = amount
+#                 brake_amt = 0
+#             if pedal is self.BRAKE:
+#                 accel_amt = 0
+#                 brake_amt = amount
+#             self.accel = self.accelerator_weight * accel_amt + self.brake_weight * brake_amt - self.friction_constant * abs(self.velocity) + self.rolling_bias
+            b = -(self.friction_constant) * abs(self.velocity) + self.rolling_bias
+            if (pedal is None):
+                a = 0
+            elif (pedal is self.ACCELERATOR):
+                a = self.accelerator_weight * amount
+            elif (pedal is self.BRAKE):
+                a = self.brake_weight * amount
+            self.accel = a + b
 #             raise Exception("You forgot to fill Simple Acceleration Calcs in the Controller Model")
 
         elif (self.model == "complex"):
@@ -145,9 +153,15 @@ class Car_Interface():
             The ouptut is the predicted acceleration which should
             account for all internal dynamics.
             '''
+#             model_inp = [0, 0, 0]
+#             model_inp[0] = accel_amt
+#             model_inp[1] = brake_amt
+#             model_inp[2] = self.velocity
             model_inp = [0, 0, 0]
-            model_inp[0] = accel_amt
-            model_inp[1] = brake_amt
+            if (pedal is self.ACCELERATOR):
+                model_inp[0] = amount
+            if (pedal is self.BRAKE):
+                model_inp[1] = amount
             model_inp[2] = self.velocity
 
             #CODE HERE (Delete exception too)
@@ -183,8 +197,10 @@ class Car_Interface():
         '''
 #         UNCOMMENT AND FILL IN (Delete exception too)
 
-        self.position += self.velocity*self.dt + 0.5*self.accel*(self.dt**2)
-        self.velocity += self.accel*self.dt
+#         self.position += self.velocity*self.dt + 0.5*self.accel*(self.dt**2)
+#         self.velocity += self.accel*self.dt
+        self.position += 0.5 * self.accel * self.dt**2 + self.velocity * self.dt
+        self.velocity += self.accel * self.dt
 #         raise Exception("You forgot to fill in pos/vel dynamics in the Controller Model")
 
         #These ensure that the velocity is never against the current gear setting.
